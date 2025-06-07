@@ -5,7 +5,7 @@ on:
     branches:
       - main
   workflow_dispatch:
- 
+
 jobs:
   expose-server-with-localtunnel:
     runs-on: ubuntu-latest
@@ -14,25 +14,12 @@ jobs:
       - name: Checkout do código
         uses: actions/checkout@v4
 
-      - name: Instalar Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Instalar dependências
-        run: npm install
-
-      - name: Iniciar servidor local em background
-        run: |
-          nohup npm start > server.log 2>&1 &
+      - name: Instalar LocalTunnel globalmente
+        run: npm install -g localtunnel
 
       - name: Iniciar servidor HTTP Python para teste
         run: |
           nohup python3 -m http.server 8080 > server.log 2>&1 &
-
-
-      - name: Instalar LocalTunnel globalmente
-        run: npm install -g localtunnel
 
       - name: Iniciar LocalTunnel e capturar URL
         id: localtunnel
@@ -44,4 +31,5 @@ jobs:
           echo "url_localtunnel=$URL" >> $GITHUB_OUTPUT
 
       - name: Exibir URL pública do LocalTunnel
-        run: 'echo URL do LocalTunnel: ${{ steps.localtunnel.outputs.url_localtunnel }}'
+        run: |
+          echo URL do LocalTunnel: ${{ steps.localtunnel.outputs.url_localtunnel }}
