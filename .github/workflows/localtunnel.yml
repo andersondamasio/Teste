@@ -1,0 +1,46 @@
+name: Exemplo LocalTunnel CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  expose-server-with-localtunnel:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar dependências
+        run: npm install
+
+      - name: Iniciar servidor local em background
+        run: |
+          nohup npm start > server.log 2>&1 &
+
+      - name: Instalar LocalTunnel globalmente
+        run: npm install -g localtunnel
+
+      - name: Iniciar LocalTunnel e capturar URL
+        id: localtunnel
+        run: |
+          nohup lt --port 8080 --print-requests > lt.log 2>&1 &
+          sleep 6
+          URL=$(grep -o 'https://[a-zA-Z0-9_.-]*\.loca\.lt' lt.log | head -n 1)
+          echo "LocalTunnel URL: $URL"
+          echo "url_localtunnel=$URL" >> $GITHUB_OUTPUT
+
+      - name: Exibir URL pública do LocalTunnel
+        run: echo "URL do LocalTunnel: ${{ steps.localtunnel.outputs.url_localtunnel }}"
+
+      # Exemplo: rodar testes de integração ou webhooks usando a URL pública
+      # - name: Rodar testes de integração
+      #   run: |
+      #     curl -I "${{ steps.localtunnel.outputs.url_localtunnel }}"
