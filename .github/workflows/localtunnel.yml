@@ -38,9 +38,4 @@ jobs:
           echo "url_localtunnel=$URL" >> $GITHUB_OUTPUT
 
       - name: Exibir URL pública do LocalTunnel
-        run: echo "URL do LocalTunnel: ${{ steps.localtunnel.outputs.url_localtunnel }}"
-
-      # Exemplo: rodar testes de integração ou webhooks usando a URL pública
-      # - name: Rodar testes de integração
-      #   run: |
-      #     curl -I "${{ steps.localtunnel.outputs.url_localtunnel }}"
+        run: 'echo URL do LocalTunnel: ${{ steps.localtunnel.outputs.url_localtunnel }}'
