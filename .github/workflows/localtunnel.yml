@@ -4,7 +4,8 @@ on:
   push:
     branches:
       - main
-
+  workflow_dispatch:
+ 
 jobs:
   expose-server-with-localtunnel:
     runs-on: ubuntu-latest
